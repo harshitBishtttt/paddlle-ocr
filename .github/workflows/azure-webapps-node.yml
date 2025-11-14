@@ -4,7 +4,7 @@ name: Build and Deploy Node.js App to Azure Web App
 on:
   push:
     branches:
-      - main  # Change to your default branch if different
+      - main  # Change to your default branch if needed
 
 jobs:
   build-and-deploy:
@@ -19,28 +19,23 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'  # Node.js 20 LTS
+        node-version: '20'
         cache: 'npm'
 
     # 3️⃣ Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # 4️⃣ Run tests (optional)
+    # 4️⃣ (Optional) Run tests
     - name: Run tests
       run: npm test
-      continue-on-error: true  # Optional: continue even if tests fail
+      continue-on-error: true
 
-    # 5️⃣ Build app (if you have a build step)
-    - name: Build
-      run: npm run build
-      if: file-exists('package.json') && contains(fromJSON(file('package.json')).scripts, 'build')
-
-    # 6️⃣ Deploy to Azure Web App
-    - name: 'Deploy to Azure Web App'
+    # 5️⃣ Deploy to Azure Web App
+    - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'peddler-ocr'                      # Your Web App name
-        slot-name: 'production'                       # Default slot
+        app-name: 'peddler-ocr'
+        slot-name: 'production'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: '.'                                  # Deploy root directory
+        package: '.'
